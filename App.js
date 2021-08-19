@@ -70,8 +70,25 @@ class App extends Component {
             mainSubscriberStreamId: null,
         };
 
+        /*
+          List of events
+          streamCreated: 'onStreamReceived',
+          streamDestroyed: 'onStreamDropped',
+          sessionConnected: 'onConnected',
+          sessionDisconnected: 'onDisconnected',
+          signal: 'onSignalReceived',
+          connectionCreated: 'onConnectionCreated',
+          connectionDestroyed: 'onConnectionDestroyed',
+          error: 'onError',
+          sessionReconnected: 'onReconnected',
+          sessionReconnecting: 'onReconnecting',
+          archiveStarted: 'onArchiveStarted',
+          archiveStopped: 'onArchiveStopped',
+          streamPropertyChanged: 'onStreamPropertyChanged',
+         */
         this.sessionEventHandlers = {
             streamCreated: (event) => {
+                console.log("sessionEventHandlers event streamCreated received")
                 const streamProperties = {
                     ...this.state.streamProperties,
                     [event.streamId]: {
@@ -86,6 +103,7 @@ class App extends Component {
                 console.log('streamCreated', this.state);
             },
             streamDestroyed: (event) => {
+                console.log("sessionEventHandlers event streamDestroyed received")
                 const indexToRemove = this.state.subscriberIds.indexOf(event.streamId);
                 const newSubscriberIds = this.state.subscriberIds;
                 const streamProperties = {...this.state.streamProperties};
@@ -102,25 +120,70 @@ class App extends Component {
                 console.log('Session otrnError error:', error);
             },
             sessionDisconnected: () => {
+                console.log("sessionEventHandlers event sessionDisconnected received")
                 this.setState({
                     streamProperties: {},
                     subscriberIds: [],
                 });
             },
+            sessionConnected: () => {
+                console.log("sessionEventHandlers event sessionConnected received")
+            },
+            sessionReconnected: () => {
+                console.log("sessionEventHandlers event sessionReconnected received")
+            },
+            signal :() => {
+                console.log("sessionEventHandlers event signal received..");
+            },
+            connectionCreated: () => {
+                console.log("sessionEventHandlers event connectionCreated received");
+            },
+            connectionDestroyed: () => {
+                console.log("sessionEventHandlers event connectionDestroyed received");
+            },
+            sessionReconnecting: () => {
+                console.log("sessionEventHandlers event sessionReconnecting received");
+            },
+            archiveStarted: () => {
+                console.log("sessionEventHandlers event archiveStarted received");
+            },
+            archiveStopped: () => {
+                console.log("sessionEventHandlers event archiveStopped received");
+            },
+            streamPropertyChanged: () => {
+                console.log("sessionEventHandlers event streamPropertyChanged received");
+            },
         };
 
         this.publisherEventHandlers = {
             streamCreated: (event) => {
-                console.log('Publisher stream created!', event);
+            console.log('Publisher stream created!', event);
             },
             streamDestroyed: (event) => {
                 console.log('Publisher stream destroyed!', event);
             },
             audioLevel: (event) => {
-                /* console.log('AudioLevel', typeof event); */
+                console.log('AudioLevel', typeof event);
+            },
+            error: (error) => {
+                console.log("PublisherEventHandler event error ", error);
             },
         };
 
+        /*
+          connected: 'onConnected',
+          disconnected: 'onDisconnected',
+          reconnected: 'onReconnected',
+          error: 'onError',
+          audioNetworkStats: 'onAudioStats',
+          videoNetworkStats: 'onVideoStats',
+          audioLevel: 'onAudioLevelUpdated',
+          videoDisabled: 'onVideoDisabled',
+          videoEnabled: 'onVideoEnabled',
+          videoDisableWarning: 'onVideoDisableWarning',
+          videoDisableWarningLifted: 'onVideoDisableWarningLifted',
+          videoDataReceived: 'onVideoDataReceived',
+         */
         this.subscriberEventHandlers = {
             connected: () => {
                 console.log('[subscriberEventHandlers - connected]');
@@ -130,6 +193,33 @@ class App extends Component {
             },
             error: (error) => {
                 console.log('subscriberEventHandlers error:', error);
+            },
+            reconnected: () => {
+                console.log('[subscriberEventHandlers - reconnected]');
+            },
+            audioNetworkStats: () => {
+                console.log('[subscriberEventHandlers - audioNetworkStats]');
+            },
+            videoNetworkStats: () => {
+                console.log('[subscriberEventHandlers - videoNetworkStats]');
+            },
+            audioLevel: () => {
+                console.log('[subscriberEventHandlers - audioLevel]');
+            },
+            videoDisabled: () => {
+                console.log('[subscriberEventHandlers - videoDisabled]');
+            },
+            videoEnabled: () => {
+                console.log('[subscriberEventHandlers - videoEnabled]');
+            },
+            videoDisableWarning: () => {
+                console.log('[subscriberEventHandlers - videoDisableWarning]');
+            },
+            videoDisableWarningLifted: () => {
+                console.log('[subscriberEventHandlers - videoDisableWarningLifted]');
+            },
+            videoDataReceived: () => {
+                console.log('[subscriberEventHandlers - videoDataReceived]');
             },
         };
 
@@ -162,10 +252,12 @@ class App extends Component {
     };
 
     joinCall = () => {
+        console.log("Entering into joinCall after the joinCall pressed..")
         const {joinCall} = this.state;
         if (!joinCall) {
             this.setState({joinCall: true});
         }
+        console.log("In joinCall changed state of joinCall " + this.state);
     };
 
     endCall = () => {
@@ -332,6 +424,7 @@ class App extends Component {
     };
 
     videoView = () => {
+        console.log("Getting into viewView ...");
         return (
             <>
                 <View style={styles.fullView}>
@@ -380,20 +473,23 @@ class App extends Component {
     };
 
     joinVideoCall = () => {
+        console.log("entering into joinVideoCall ");
         return (
             <SafeAreaView style={styles.fullView}>
                 <Button
                     onPress={this.joinCall}
-                    title="JoinCall"
+                    title="JoinCall--Mani2-New"
                     color="#841584"
                     accessibilityLabel="Join call">
                     Join Call
                 </Button>
+
             </SafeAreaView>
         );
     };
 
     render() {
+        console.log("joinCall State : " +this.state.joinCall );
         return this.state.joinCall ? this.videoView() : this.joinVideoCall();
     }
 }
